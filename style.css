@@ -1,0 +1,292 @@
+/* Mongabay 2026_089: interactive report card of India's deep-sea fishing vessel scheme.
+   Colours, fonts, radii and shadows are Mongabay Design System tokens. */
+
+:root {
+  /* type */
+  --font-serif: "Rowan", "Rowan-Regular", Georgia, serif;     /* adjust display font here */
+  --font-sans: "Public Sans", Helvetica, Arial, sans-serif;   /* adjust text font here */
+
+  /* surfaces and ink */
+  --surface: #ffffff;    /* adjust page background here */
+  --panel: #fafafa;      /* chart-panel: adjust table panel colour here */
+  --card: #eceeee;       /* card: adjust callout background here */
+  --ink: #092f29;        /* ink (pine-green): adjust main text colour here */
+  --ink-muted: #738b87;  /* ink-muted: adjust deck, header and note colour here */
+  --rule: #e4e7e7;       /* adjust the colour of the lines between rows here */
+
+  /* boats: one dot per boat */
+  --c-built: #1d6572;    /* sapphire-blue-tone: adjust "built or under construction" dots here */
+  --c-idle: #74adb3;     /* sapphire-blue: adjust "sanctioned, not started" dots here */
+  --c-unknown: #d7d7d7;  /* neutral grey: adjust "no data yet" dots here */
+
+  /* funds: one bar per state, split by who pays */
+  --c-central: #1d6572;      /* adjust central government share colour here */
+  --c-state: #788986;        /* adjust state government share colour here */
+  --c-beneficiary: #1d6572;  /* adjust beneficiary share hatch colour here */
+  --c-na: #92a3a0;           /* adjust "information not available" outline colour here */
+  --stat-ink: #123940;       /* ocean-blue: adjust callout number colour here */
+
+  /* shape */
+  --radius-frame: 10px;  /* adjust panel corner radius here */
+  --radius-card: 12px;   /* adjust callout corner radius here */
+  --rounded: 8px;        /* adjust hover card corner radius here */
+  --shadow-card: 0 2px 8px #0f362e26;                   /* adjust hover card shadow here */
+  --focus-ring: 0 0 0 2px #ffffff, 0 0 0 4px #006a54;
+
+  /* table columns */
+  --col-name: minmax(9.5rem, 1.1fr);  /* adjust column widths here */
+  --col-boats: minmax(0, 1.25fr);
+  --col-funds: minmax(0, 2fr);
+  --col-info: 4.5rem;
+  --col-gap: 1.25rem;                 /* adjust space between columns here */
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 16px;   /* adjust base text size here: most sizes below scale with it */
+  line-height: 1.5;
+}
+
+.rc {
+  position: relative;
+  max-width: 1100px;      /* adjust the widest the graphic gets here */
+  margin: 0 auto;
+  padding: 24px 16px 20px; /* adjust outer spacing here */
+}
+
+/* ------------------------------------------------------------------ title block */
+.rc-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+.rc-title {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: clamp(1.75rem, 2.2vw + 1rem, 2.5rem); /* adjust title size here */
+  font-weight: 400;
+  line-height: 1.1;
+}
+.rc-logo { flex: none; width: 40px; height: 40px; } /* adjust logo size here */
+
+.rc-intro {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px 40px;   /* adjust space between the deck and the callout here */
+  margin-top: 0.6rem;
+}
+.rc-deck {
+  flex: 1 1 30rem;
+  max-width: 50rem;  /* adjust deck line length here */
+  margin: 0;
+  color: var(--ink-muted);
+  font-size: clamp(1rem, 0.3vw + 0.9rem, 1.125rem); /* adjust deck size here */
+  line-height: 1.45;
+  text-wrap: balance; /* even line lengths, no stranded last line */
+}
+
+/* ------------------------------------------------------------------ legend and callout */
+.rc-legend {
+  display: grid;
+  gap: 8px;
+  margin: 1.5rem 0 1rem; /* adjust space around the legend here */
+  font-size: 0.9375rem;  /* adjust legend text size here */
+  line-height: 1.3;
+}
+.rc-legend__row { display: grid; grid-template-columns: 3.5rem 1fr; align-items: baseline; }
+.rc-legend__items { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 22px; }
+.rc-legend__title { color: var(--ink-muted); }
+.rc-legend__item { display: inline-flex; align-items: center; gap: 8px; }
+.rc-legend__unit { color: var(--ink-muted); }
+.rc-key-dot { flex: none; width: 10px; height: 10px; border-radius: 50%; } /* adjust legend dot size here */
+.rc-key-bar { flex: none; width: 24px; height: 14px; }                     /* adjust legend bar swatch size here */
+.k-built { background: var(--c-built); }
+.k-idle { background: var(--c-idle); }
+.k-unknown { background: var(--c-unknown); }
+
+.rc-stat {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px;
+  border-radius: var(--radius-card);
+  background: var(--card);
+  flex: none;
+}
+.rc-stat__value {
+  color: var(--stat-ink);
+  font-family: var(--font-serif);
+  font-size: 1.875rem; /* adjust callout number size here */
+  line-height: 1;
+  white-space: nowrap;
+}
+.rc-stat__label { max-width: 9.5rem; font-size: 0.9375rem; line-height: 1.25; } /* adjust callout label size here */
+
+/* ------------------------------------------------------------------ table */
+.rc-panel {
+  padding: 4px 20px 12px; /* adjust panel inner spacing here */
+  border-radius: var(--radius-frame);
+  background: var(--panel);
+}
+.rc-row {
+  display: grid;
+  grid-template-columns: var(--col-name) var(--col-boats) var(--col-funds) var(--col-info);
+  align-items: center;
+  column-gap: var(--col-gap);
+  min-height: 56px;  /* adjust row height here */
+  padding: 10px 0;
+  border-top: 1px solid var(--rule);
+}
+.rc-row--head {
+  align-items: start;
+  min-height: 0;
+  padding: 10px 0 8px;
+  border-top: 0;
+  color: var(--ink-muted);
+  font-size: 0.875rem; /* adjust column header size here */
+  line-height: 1.3;
+}
+.rc-row--head .rc-info { text-align: center; }
+.rc-row--head .rc-name { font-size: inherit; line-height: inherit; }
+
+.rc-name { font-size: 1.125rem; line-height: 1.25; } /* adjust state name size here */
+.rc-ut {
+  margin-left: 0.4em;
+  color: var(--ink-muted);
+  font-size: 0.75rem;     /* adjust UT tag size here */
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  cursor: help;
+}
+.rc-none { color: var(--ink-muted); font-size: 0.9375rem; }
+
+/* dots */
+.rc-dotwrap { width: 100%; }
+.rc-dots { display: block; height: auto; }
+.d-built { fill: var(--c-built); }
+.d-idle { fill: var(--c-idle); }
+.d-unknown { fill: var(--c-unknown); }
+
+/* funds bar */
+.rc-bar { display: flex; height: 26px; } /* adjust funds bar height here */
+.rc-seg { flex: none; height: 100%; }
+.rc-seg--central { background: var(--c-central); }
+.rc-seg--state { background: var(--c-state); }
+.rc-seg--beneficiary {
+  background: repeating-linear-gradient(45deg, var(--c-beneficiary) 0 1.5px, #ffffff 1.5px 6px); /* adjust hatch here */
+  box-shadow: inset 0 0 0 1px var(--c-beneficiary);
+}
+.rc-seg--na { background: #ffffff; box-shadow: inset 0 0 0 1px var(--c-na); }
+
+/* funds scale in the header */
+.rc-ticks { position: relative; height: 1.2em; margin-top: 4px; font-variant-numeric: tabular-nums; }
+.rc-ticks span { position: absolute; top: 0; transform: translateX(-50%); white-space: nowrap; }
+.rc-ticks span:first-child { transform: none; }
+
+/* hover and focus targets */
+.rc-trigger { cursor: pointer; border-radius: 3px; outline: none; }
+.rc-trigger:focus-visible { box-shadow: var(--focus-ring); }
+
+/* info button */
+.rc-info { display: flex; justify-content: center; }
+.rc-info-btn {
+  display: grid;
+  place-items: center;
+  width: 28px;   /* adjust info button size here */
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--ink);  /* adjust info button colour here */
+  cursor: pointer;
+}
+.rc-info-btn svg { display: block; width: 100%; height: 100%; }
+.rc-info-btn:hover,
+.rc-info-btn[aria-expanded="true"] { color: var(--c-built); } /* adjust info button hover colour here */
+.rc-info-btn:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+
+/* ------------------------------------------------------------------ hover card */
+.rc-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  width: max-content;
+  max-width: 340px;  /* adjust hover card width here */
+  padding: 10px 12px;
+  border-radius: var(--rounded);
+  background: #ffffff;
+  color: var(--ink);
+  box-shadow: var(--shadow-card);
+  font-size: 0.875rem; /* adjust hover card text size here */
+  line-height: 1.4;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.12s ease, visibility 0.12s;
+}
+.rc-tip.is-on { opacity: 1; visibility: visible; }
+.rc-tip.is-note { max-width: 360px; font-size: 0.9375rem; line-height: 1.45; pointer-events: auto; }
+.rc-tip__title { margin-bottom: 4px; font-weight: 500; }
+.rc-tip__line { color: var(--ink-muted); }
+.rc-tip__grid {
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: center;
+  gap: 3px 14px;
+  margin-top: 6px;
+}
+.rc-tip__key { display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; }
+.rc-tip__val { text-align: right; font-variant-numeric: tabular-nums; }
+.rc-tip__val.is-na { color: var(--ink-muted); }
+
+/* ------------------------------------------------------------------ notes and source */
+.rc-foot { margin-top: 12px; color: var(--ink-muted); font-size: 0.8125rem; line-height: 1.4; } /* adjust footer size here */
+.rc-foot p { margin: 4px 0 0; }
+
+.rc-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------------------ article-column widths: more room for the dots */
+@media (max-width: 900px) {
+  :root {
+    --col-name: minmax(8rem, 0.9fr);   /* adjust mid-width column widths here */
+    --col-boats: minmax(0, 1.45fr);
+    --col-funds: minmax(0, 1.6fr);
+    --col-info: 2.75rem;
+    --col-gap: 1rem;
+  }
+  .rc-panel { padding: 4px 16px 12px; }
+}
+
+/* ------------------------------------------------------------------ phones: name and info on one line, dots and bar below */
+@media (max-width: 640px) {
+  .rc-row {
+    grid-template-columns: 1fr auto;
+    grid-template-areas: "name info" "boats boats" "funds funds";
+    row-gap: 8px;
+  }
+  .rc-row--head { display: none; }
+  .rc-row--head + .rc-row { border-top: 0; }
+  .rc-name { grid-area: name; }
+  .rc-boats { grid-area: boats; }
+  .rc-funds { grid-area: funds; }
+  .rc-info { grid-area: info; }
+  .rc-funds:empty { display: none; }
+  .rc-stat { width: 100%; }
+}
