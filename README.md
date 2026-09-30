@@ -19,7 +19,9 @@ Numbers show on hover, keyboard focus or tap.
 | `style.css` | Mongabay Design System colours, type and layout. Tweak points are commented |
 | `app.js` | Drawing and hover cards. Dot size and funds scale are in `CFG` at the top |
 | `embed-height.js` | Inside an iframe, reports the graphic's height to the article |
-| `embed-snippet.html` | The code to paste into the story, set in a stand-in article column for testing |
+| `embed-shortcode.txt` | **The WordPress shortcode to paste into the story** (built by `dev/embed_shortcode.py`) |
+| `embed-snippet.html` | Alternative with a resize script, for editors that allow `<script>` |
+| `dev/` | `measure.html` (heights at every column width), `heights.json`, `embed_shortcode.py` (checks the height formula and writes the shortcode), `shortcode-test.html` (a stand-in Mongabay article) |
 
 ## Updating
 
@@ -31,27 +33,33 @@ Numbers show on hover, keyboard focus or tap.
 
 ## Embedding in a Mongabay story
 
-1. **Paste the snippet.** Copy the block between the COPY markers in `embed-snippet.html` into a **Custom HTML** block
-   where the graphic goes.
-   - WordPress keeps `<iframe>` and `<script>` only for roles with the "unfiltered HTML" permission. If the block comes
-     back stripped, ask Mongabay's web team to paste it.
-   - Keep the snippet's shape: one wrapper `<div>`, with no line break between `</iframe>` and `<script>`. The classic
-     editor otherwise wraps the frame in `<p>` or adds a `<br>`, which puts a blank line under the graphic.
-2. **How the height works.**
-   - `embed-height.js` reports the graphic's real height, and the snippet sets the frame to fit it, on load and on
-     every width change.
-   - It's 1,254 px in Mongabay's 780 px desktop column and 2,262 px in the 335 px phone column.
-   - The frame starts at 1,254 px, so desktop never jumps.
-   - WordPress's own embed resizer is not used, because it caps iframes at 1,000 px.
-3. **Spacing matches Mongabay's own captioned images.**
-   - The wrapper has a 40 px margin, as `figure.wp-caption` does.
-   - Inside the frame, the source line ends about 3 px above the bottom edge.
-   - Measured on the test page, it's 45 px from the source line to the next paragraph, the same as an image caption on
-     a live article.
-4. **If only the iframe survives** (the script is stripped), the frame stays 1,254 px tall and the graphic scrolls
-   inside it on phones.
-5. **To test:** open `embed-snippet.html` in a browser. It mimics a Mongabay article column: 780 px wide, 20 px phone
-   margins, Public Sans 16/24.
+**Use the shortcode in `embed-shortcode.txt`.** Mongabay's editor accepts only an `[iframe …][/iframe]` shortcode: no
+`<div>`, no `<script>`. Paste the file's single line where the graphic goes.
+
+**How it sizes itself without a script:**
+- The `style` works out the article column's width from the screen width, using the theme's own rule
+  (`min(780px, 100vw − 2 × clamp(20px, 1px + 5vw, 40px))`, read from news.mongabay.com on 30 Sep 2026).
+- From that width it gives a height at least as tall as the graphic needs (`dev/heights.json`).
+- The `?fill=1` in the URL makes the graphic stretch to fill the frame. The formula's few spare pixels go into the row
+  spacing: 1 to 8 px per row, or about 3 px on desktop. They never show as a gap under the source line.
+- The frame has a 40 px margin, the same as Mongabay's own images, so the next paragraph starts about 44 px below the
+  source line.
+- Checked for every screen width from 320 to 1,600 px, and in the browser at 320, 375, 412, 430, 600, 768, 820 and
+  1,280 px: no overflow, no gap.
+
+**When the content changes** (new figures or text change the graphic's height), re-measure and rebuild:
+1. Serve the repo root with `python3 -m http.server`, open `/dev/measure.html`, and save its JSON as
+   `dev/heights.json`.
+2. Run `python3 dev/embed_shortcode.py`. It reports any width where the formula would fall short, and rewrites
+   `embed-shortcode.txt` and `dev/shortcode-test.html`.
+
+**Limits:**
+- It relies on Mongabay's column rule. If the theme changes it, re-check with `dev/shortcode-test.html`.
+- On Windows browsers with classic scrollbars, windows 860–880 px wide can come up short by a few pixels. The frame then
+  scrolls a little rather than hiding content (`scrolling="auto"`).
+
+**If Mongabay's web team can add a script to a post:** `embed-snippet.html` resizes the frame exactly, using
+`embed-height.js`, without fill mode.
 
 **Also:**
 - Keep the static PNG for newsletters, apps and social posts, where iframes don't run.

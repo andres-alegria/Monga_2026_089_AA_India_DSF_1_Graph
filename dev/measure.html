@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Measure the report card's height at every column width</title>
+</head>
+<body>
+<pre id="out">Measuring…</pre>
+<script>
+/* Loads the graphic in same-origin frames at every column width a Mongabay article can give it (276–780 px) and
+   records its natural height (not the fill mode). Serve the repo root (python3 -m http.server), open
+   /dev/measure.html, save the JSON it prints as dev/heights.json, then run python3 dev/embed_shortcode.py. */
+(async function () {
+  var out = {}, pre = document.getElementById("out");
+  for (var w = 276; w <= 780; w += 2) {
+    var f = document.createElement("iframe");
+    f.style.cssText = "width:" + w + "px;height:3000px;border:0;display:block";
+    f.src = "../index.html?measure=" + w;
+    document.body.appendChild(f);
+    await new Promise(function (r) { f.onload = r; });
+    await f.contentDocument.fonts.ready;
+    await new Promise(function (r) { setTimeout(r, 60); });
+    out[w] = Math.ceil(f.contentDocument.getElementById("rc").getBoundingClientRect().height);
+    f.remove();
+    pre.textContent = "Measuring… " + w + " px";
+  }
+  pre.textContent = JSON.stringify(out);
+})();
+</script>
+</body>
+</html>

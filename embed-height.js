@@ -6,6 +6,9 @@
   if (window.parent === window) return;
 
   document.documentElement.classList.add("is-embedded"); // style.css trims the side padding in articles
+  // ?fill=1 is the script-free WordPress shortcode: its height formula runs a little generous, so the graphic stretches
+  // to fill the frame and the spare pixels go into the row spacing instead of a gap at the bottom
+  if (/[?&]fill=1(&|$)/.test(location.search)) document.documentElement.classList.add("is-fill");
 
   var fig = document.getElementById("rc");
   var last = 0;

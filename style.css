@@ -1,6 +1,18 @@
 /* Mongabay 2026_089: interactive report card of India's deep-sea fishing vessel scheme.
    Colours, fonts, radii and shadows are Mongabay Design System tokens. */
 
+/* Rowan: the installed copy if there is one, otherwise the webfont Mongabay's own theme serves (CORS-open), so
+   every reader gets the same title and the embed's height stays predictable */
+@font-face {
+  font-family: "Rowan";
+  src: local("Rowan"), local("Rowan-Regular"),
+       url("https://news.mongabay.com/wp-content/themes/mongabay_v2/fonts/Rowan-Regular.woff2") format("woff2"),
+       url("https://news.mongabay.com/wp-content/themes/mongabay_v2/fonts/Rowan-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   /* type */
   --font-serif: "Rowan", "Rowan-Regular", Georgia, serif;     /* adjust display font here */
@@ -62,6 +74,11 @@ body {
 /* inside an article's iframe (embed-height.js adds the class): line the graphic up with the text column and let
    the article's margin do the spacing, so the source line ends ~3 px above the frame edge, as a Mongabay caption does */
 .is-embedded .rc { padding: 6px 0 1px; } /* adjust embedded spacing here (6 px keeps the title's ascenders inside the frame) */
+
+/* ?fill=1 (the WordPress shortcode): fill the frame's height, sharing any spare pixels out between the rows */
+.is-fill .rc { display: flex; flex-direction: column; min-height: 100vh; }
+.is-fill .rc-panel { flex: 1 0 auto; display: flex; flex-direction: column; }
+.is-fill .rc-panel > .rc-row:not(.rc-row--head) { flex: 1 0 auto; }
 
 /* ------------------------------------------------------------------ title block */
 .rc-head {
