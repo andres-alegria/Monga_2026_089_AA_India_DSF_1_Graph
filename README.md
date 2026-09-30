@@ -31,18 +31,26 @@ Numbers show on hover, keyboard focus or tap.
 ## Embedding in a Mongabay story
 
 1. **Paste the snippet.** Copy the block between the COPY markers in `embed-snippet.html` into a **Custom HTML** block
-   where the graphic goes. WordPress keeps `<iframe>` and `<script>` only for roles with the "unfiltered HTML"
-   permission. If the block comes back stripped, ask Mongabay's web team to paste it.
+   where the graphic goes.
+   - WordPress keeps `<iframe>` and `<script>` only for roles with the "unfiltered HTML" permission. If the block comes
+     back stripped, ask Mongabay's web team to paste it.
+   - Keep the snippet's shape: one wrapper `<div>`, with no line break between `</iframe>` and `<script>`. The classic
+     editor otherwise wraps the frame in `<p>` or adds a `<br>`, which puts a blank line under the graphic.
 2. **How the height works.**
-   - The frame starts 1,400 px tall.
-   - `embed-height.js` then reports the graphic's real height, and the snippet sets the frame to fit, on load and on
+   - `embed-height.js` reports the graphic's real height, and the snippet sets the frame to fit it, on load and on
      every width change.
-   - The real height is about 1,270 px in a 780 px article column and 2,180 px on a phone.
+   - It's 1,256 px in Mongabay's 780 px desktop column and 2,165 px in the 335 px phone column.
+   - The frame starts at 1,256 px, so desktop never jumps.
    - WordPress's own embed resizer is not used, because it caps iframes at 1,000 px.
-3. **If only the iframe survives** (the script is stripped), the frame stays 1,400 px tall:
-   - on desktop, there's blank space under the graphic;
-   - on phones, the graphic scrolls inside the frame.
-4. **To test:** open `embed-snippet.html` in a browser.
+3. **Spacing matches Mongabay's own captioned images.**
+   - The wrapper has a 40 px margin, as `figure.wp-caption` does.
+   - Inside the frame, the source line ends about 3 px above the bottom edge.
+   - Measured on the test page, it's 45 px from the source line to the next paragraph, the same as an image caption on
+     a live article.
+4. **If only the iframe survives** (the script is stripped), the frame stays 1,256 px tall and the graphic scrolls
+   inside it on phones.
+5. **To test:** open `embed-snippet.html` in a browser. It mimics a Mongabay article column: 780 px wide, 20 px phone
+   margins, Public Sans 16/24.
 
 **Also:**
 - Keep the static PNG for newsletters, apps and social posts, where iframes don't run.

@@ -59,8 +59,9 @@ body {
   padding: 24px 16px 20px; /* adjust outer spacing here */
 }
 
-/* inside an article's iframe (embed-height.js adds the class): line the graphic up with the text column */
-.is-embedded .rc { padding: 8px 0 12px; } /* adjust embedded spacing here */
+/* inside an article's iframe (embed-height.js adds the class): line the graphic up with the text column and let
+   the article's margin do the spacing, so the source line ends ~3 px above the frame edge, as a Mongabay caption does */
+.is-embedded .rc { padding: 6px 0 1px; } /* adjust embedded spacing here (6 px keeps the title's ascenders inside the frame) */
 
 /* ------------------------------------------------------------------ title block */
 .rc-head {
