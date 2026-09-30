@@ -3,51 +3,56 @@
 window.RC_CONTENT = {
   title: "Few takers for India’s deep-sea fishing scheme",
   deck:
-    "A nine-month long investigation has revealed that the central government’s flagship scheme of building " +
-    "indigenous deep sea fishing vessels under PMMSY is not working. The actual number of deep sea fishing vessels " +
-    "constructed on the ground is far lesser than the numbers sanctioned by the central government to each state.",
+    "The number of deep-sea fishing vessels built or under construction through the Pradhan Mantri Matsya Sampada " +
+    "Yojana is far less than the numbers approved by the central government for each state.", // verbatim from the update
 
   legend: {
     boats: "Boats",
-    built: "Built or under construction, as of September 2026",
-    idle: "Sanctioned, not started",
-    unknown: "No data yet",
+    built: "Ordered by beneficiaries (built or under construction), as of September 2026",
+    idle: "Approved, not ordered",
+    unknown: "Data not available",
     unit: "1 dot = 1 boat",
     funds: "Funds",
     central: "Central government share",
     state: "State government share",
     beneficiary: "Beneficiary share",
-    na: "Information not available",
+    na: "Data not available",
   },
   callout: { value: "₹12 million", label: "Approximate cost of one boat" },
 
   headers: {
     name: "State or union territory",
-    boats: "Boats sanctioned, 2020–2025",
-    funds: "Funds sanctioned (₹ million)",
+    boats: "Boats approved, 2020–2025",
+    funds: "Total approved amount (₹ million)",
     info: "More info",
   },
-  none: "No boats sanctioned",
+  none: "No boats approved",        // a state with zero boats approved
+  unavailable: "Data not available", // a state with no figures at all
   utTag: "UT", // shown after the names of union territories
 
   // hover text
   tip: {
-    sanctioned: "sanctioned, 2020–2025",
-    built: "built or under construction",
-    idle: "not started",
-    awaited: "Construction figures awaited",
-    total: "sanctioned",
+    sanctioned: "approved, 2020–2025",
+    built: "ordered (built or under construction)",
+    idle: "not ordered",
+    awaited: "Boats ordered: data not available",
+    total: "approved",
     central: "Central government",
     state: "State government",
     beneficiary: "Beneficiary",
-    na: "not available",
-    ut: "none (union territory)",
+    na: "data not available",
+    ut: "not applicable (union territory)",
     unaccounted: "Not broken down", // when the three shares don't add up to the total
     million: "million",
   },
 
-  notes: ["Union territories (UT) have no state government share."],
-  source: "Source: RTI, Lok Sabha and state fisheries officials.",
+  // footer lines, each on its own line
+  notes: [
+    "Note: Union territories (UT) have no state government share.",
+    "* Andaman and Nicobar Islands: possibly an error in the source Lok Sabha document, since the sum doesn’t match " +
+      "the total figure.",
+  ],
+  source: "Source: RTI, Lok Sabha answers and state fisheries officials.",
 
   names: {
     "Andaman & Nicobar Islands": "Andaman and Nicobar Islands",
@@ -55,13 +60,14 @@ window.RC_CONTENT = {
   },
   ut: ["Andaman & Nicobar Islands", "Lakshadweep", "Puducherry", "Daman & Diu"],
 
-  // row order: most boats sanctioned first, then the states with none (as in the v1 graphic)
+  // row order: most boats approved first (ties: more ordered first, then by name), then none, then no data
   order: [
-    "Karnataka", "Maharashtra", "Andhra Pradesh", "Gujarat", "Kerala", "Lakshadweep", "Puducherry",
-    "Andaman & Nicobar Islands", "Goa", "Odisha", "Tamil Nadu", "West Bengal", "Daman & Diu",
+    "Karnataka", "Maharashtra", "Andhra Pradesh", "Gujarat", "Tamil Nadu", "Kerala", "Goa", "Lakshadweep",
+    "Puducherry", "Andaman & Nicobar Islands", "West Bengal", "Odisha", "Daman & Diu",
   ],
 
-  // the reporter's notes (column K), edited; a state without a note gets no info button
+  // the reporter's notes (column K of the original sheet; the 30 Sep update has none), edited;
+  // a state without a note gets no info button
   reasons: {
     "Karnataka":
       "Fewer boats have been ordered than the centre approved. Fishers are reluctant to apply because the boats " +
@@ -81,7 +87,7 @@ window.RC_CONTENT = {
     "Lakshadweep":
       "Nine under construction so far. The scheme started late in 2025 because they needed a standard " +
       "government-approved design for pole-and-line boats, which they were not getting.",
-    "Puducherry": "Awaiting a response on the number of boats built.",
+    "Puducherry": "", // the update gives no order figures ("Data not available"), so the old note is gone
     "Andaman & Nicobar Islands":
       "Only three boats, all still under construction. No money has been spent on any tuna-related infrastructure.",
     "Goa":

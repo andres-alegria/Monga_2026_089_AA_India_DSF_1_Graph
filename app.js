@@ -25,7 +25,7 @@
   var num = new Intl.NumberFormat("en-US", { maximumFractionDigits: 1 });
   var byKey = {};
   D.forEach(function (d) { byKey[d.key] = d; });
-  var maxCols = Math.ceil(Math.max.apply(null, D.map(function (d) { return d.sanctioned; })) / CFG.dotRows);
+  var maxCols = Math.ceil(Math.max.apply(null, D.map(function (d) { return d.sanctioned || 0; })) / CFG.dotRows);
 
   // ---------------------------------------------------------------- helpers
   function el(tag, cls, text) {
@@ -93,7 +93,7 @@
   stat.appendChild(el("span", "rc-stat__label", C.callout.label));
 
   var notes = document.getElementById("rc-notes");
-  notes.textContent = (C.notes.length > 1 ? "Notes: " : "Note: ") + C.notes.join(" ");
+  C.notes.forEach(function (line) { notes.appendChild(el("p", null, line)); });
   document.getElementById("rc-source").textContent = C.source;
 
   // ---------------------------------------------------------------- table
@@ -143,11 +143,12 @@
     }
 
     var boats = cell("rc-boats");
-    if (d.sanctioned) boats.appendChild(dots(d));
+    if (d.sanctioned == null) boats.appendChild(el("span", "rc-none", C.unavailable));
+    else if (d.sanctioned) boats.appendChild(dots(d));
     else boats.appendChild(el("span", "rc-none", C.none));
 
     var funds = cell("rc-funds");
-    if (d.total) funds.appendChild(fundsBar(d));
+    if (isNum(d.total) && d.total > 0) funds.appendChild(fundsBar(d));
 
     var info = cell("rc-info");
     if (C.reasons[key]) info.appendChild(infoButton(d, C.reasons[key], i));
@@ -229,7 +230,7 @@
   // ---------------------------------------------------------------- card and label text
   function boatsLabel(d) {
     return name(d.key) + ": " + d.sanctioned + " boats " + C.tip.sanctioned + "; " +
-      (d.built == null ? C.tip.awaited.toLowerCase() : d.built + " " + C.tip.built + " (September 2026)") + ".";
+      (d.built == null ? C.tip.awaited.toLowerCase() : d.built + " " + C.tip.built + ", as of September 2026") + ".";
   }
   function boatsCard(d) {
     var t = C.tip;
@@ -248,7 +249,7 @@
     var v = d[kind];
     if (kind === "state" && v === "ut") return { text: C.tip.ut, na: true };
     if (!isNum(v)) return { text: C.tip.na, na: true };
-    return { text: money(v), na: false };
+    return { text: money(v) + ((d.flags && d.flags[kind]) || ""), na: false }; // "*" points to a footnote
   }
   function fundsLabel(d) {
     var t = C.tip;

@@ -23,8 +23,9 @@ Numbers show on hover, keyboard focus or tap.
 
 ## Updating
 
-- **New figures:** `python3 make_data.py path/to/spreadsheet.xlsx`. It warns when a state's shares don't add up to
-  its total.
+- **New figures:** `python3 make_data.py path/to/spreadsheet.xlsx`. The current source is
+  `PMMSY DEEP SEA FISHING VESSEL SCHEME 2020-2025_Update.xlsx` (sheet "final cleaned data sheet", 30 Sep 2026), in the
+  project's `Data` folder, outside this repo. It warns when a state's shares don't add up to its total.
 - **Text:** edit `content.js`.
 - **Publishing:** push to `main`, and Vercel redeploys https://monga2026089aaindiadsf1graph.vercel.app
 
@@ -39,15 +40,15 @@ Numbers show on hover, keyboard focus or tap.
 2. **How the height works.**
    - `embed-height.js` reports the graphic's real height, and the snippet sets the frame to fit it, on load and on
      every width change.
-   - It's 1,256 px in Mongabay's 780 px desktop column and 2,165 px in the 335 px phone column.
-   - The frame starts at 1,256 px, so desktop never jumps.
+   - It's 1,254 px in Mongabay's 780 px desktop column and 2,262 px in the 335 px phone column.
+   - The frame starts at 1,254 px, so desktop never jumps.
    - WordPress's own embed resizer is not used, because it caps iframes at 1,000 px.
 3. **Spacing matches Mongabay's own captioned images.**
    - The wrapper has a 40 px margin, as `figure.wp-caption` does.
    - Inside the frame, the source line ends about 3 px above the bottom edge.
    - Measured on the test page, it's 45 px from the source line to the next paragraph, the same as an image caption on
      a live article.
-4. **If only the iframe survives** (the script is stripped), the frame stays 1,256 px tall and the graphic scrolls
+4. **If only the iframe survives** (the script is stripped), the frame stays 1,254 px tall and the graphic scrolls
    inside it on phones.
 5. **To test:** open `embed-snippet.html` in a browser. It mimics a Mongabay article column: 780 px wide, 20 px phone
    margins, Public Sans 16/24.
@@ -59,11 +60,12 @@ Numbers show on hover, keyboard focus or tap.
 
 ## Open questions for the reporter
 
-- **Maharashtra:** the shares add up to ₹755.8 million, not ₹756 million. The beneficiary share is probably 3,408
-  lakh, not 3,406.
-- **Andaman and Nicobar Islands:** the centre and beneficiary each show ₹33.6 million, which is ₹4.8 million short of
-  the ₹72 million total. One of the two is probably ₹38.4 million (384 lakh).
-
-  Both gaps show as "Not broken down" in the hover card.
-- **Puducherry:** the number of boats built is still awaited.
-- **Daman and Diu:** it has no note in column K, so it has no info button.
+- **Andaman and Nicobar Islands:** the centre and beneficiary shares (₹33.6 million each) are ₹4.8 million short of
+  the ₹72 million total. The update flags this as a possible error in the source Lok Sabha document. The graphic
+  footnotes it and shows the gap as "Not broken down".
+- **Puducherry:** the boats ordered and the beneficiary share are not available.
+- **Odisha and Daman and Diu:** no figures at all ("Data not available").
+- **Notes behind the info buttons:** the update has no notes column. They are still edited from the original sheet's
+  column K. The Goa and Tamil Nadu notes were written when those states had no boats approved, so check they still
+  hold with 20 and 50 approved and none ordered. Puducherry's note came from the old "awaiting response" cell and was
+  removed.
