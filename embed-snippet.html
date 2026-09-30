@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>2026_089 embed snippet · test page</title>
+  <style>
+    /* a stand-in for a Mongabay article column, for testing only; not part of the snippet */
+    body { margin: 0; background: #ffffff; color: #092f29; font: 18px/1.6 Georgia, serif; }
+    main { max-width: 780px; margin: 0 auto; padding: 24px 20px; }
+  </style>
+</head>
+<body>
+<main>
+  <p>Article text before the graphic.</p>
+
+<!-- ======================= COPY FROM HERE into a Custom HTML block in WordPress ======================= -->
+<iframe id="mongabay-2026-089"
+  src="https://monga2026089aaindiadsf1graph.vercel.app/"
+  title="Few takers for India’s deep-sea fishing scheme: boats and funds sanctioned by state (interactive)"
+  width="100%" height="1400" loading="lazy"
+  style="display:block;width:100%;height:1400px;border:0;margin:1.5em 0;"></iframe>
+<script>
+(function () {
+  var frame = document.getElementById("mongabay-2026-089");
+  var origin = "https://monga2026089aaindiadsf1graph.vercel.app";
+  window.addEventListener("message", function (e) {
+    if (e.origin !== origin || e.source !== frame.contentWindow) return;
+    if (e.data && e.data.type === "mongabay-embed-height" && e.data.height > 0) {
+      frame.style.height = Math.ceil(e.data.height) + "px";
+    }
+  });
+  frame.addEventListener("load", function () {
+    frame.contentWindow.postMessage({ type: "mongabay-embed-height-request" }, origin);
+  });
+})();
+</script>
+<!-- ======================= COPY TO HERE ======================= -->
+
+  <p>Article text after the graphic.</p>
+</main>
+</body>
+</html>
