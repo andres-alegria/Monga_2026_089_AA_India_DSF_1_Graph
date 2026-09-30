@@ -34,13 +34,14 @@ def col(vw):
     return min(780, vw - 2 * min(40, max(20, 1 + 0.05 * vw)))
 
 
-# The height formula, in px (see css_height below). Fitted by hand to dev/heights.json with a margin of at least 6 px:
-#   - four-column layout (column over 640 px): 1,290 px, plus 54 below a 749 px column;
+# The height formula, in px (see css_height below), fitted to dev/heights.json with a margin of at least 6 px
+# (refitted 30 Sep 2026 after the title was matched to the 2026_090 timeline):
+#   - four-column layout (column over 640 px): 1,280 px, plus 25 below a 749 px column;
 #   - one-column phone layout (up to 640 px): the higher of two falling lines, a steep one for small phones and a
 #     gentle one for larger screens.
 FORMULA = {
-    "desk_base": 1290, "desk_step_below": 749, "desk_step": 54,
-    "steep": (2774.1, 1.457), "gentle": (2378.1, 0.572),
+    "desk_base": 1280, "desk_step_below": 749, "desk_step": 25,
+    "steep": (2853.9, 1.8), "gentle": (2405.4, 0.64),
     "switch_at": 640.5,   # the graphic's own layout switch is at 640 px
 }
 

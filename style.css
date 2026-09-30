@@ -81,22 +81,23 @@ body {
 .is-fill .rc-panel > .rc-row:not(.rc-row--head) { flex: 1 0 auto; }
 
 /* ------------------------------------------------------------------ title block */
+/* title and logo: the same rules as the 2026_090 timeline (Monga_2026_090_AA_India_DSF_2_Timeline), so the two
+   graphics' headers match in the same article column */
 .rc-head {
-  --title-size: clamp(1.75rem, 2.2vw + 1rem, 2.5rem); /* adjust title size here */
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 24px;
+  gap: 16px;
 }
 .rc-title {
   margin: 0;
   font-family: var(--font-serif);
-  font-size: var(--title-size);
+  font-size: clamp(1.5rem, 2vw + 0.9rem, 2.25rem); /* adjust title size here (keep it matching 2026_090) */
   font-weight: 400;
   line-height: 1.1;
+  text-wrap: balance;
 }
-/* the lizard mark: the same rule as the 2026_090 timeline (Monga_2026_090_AA_India_DSF_2_Timeline), so the two
-   graphics show the same size mark in the same article column; 0.8 x that graphic's title size */
+/* the lizard mark: 0.8 x the title size, the same ratio as the static graphic (40 px mark, 50 px title) */
 .rc-logo {
   flex: none;
   width: clamp(1.2rem, 1.6vw + 0.72rem, 1.8rem);  /* adjust logo size here (keep it matching 2026_090) */
