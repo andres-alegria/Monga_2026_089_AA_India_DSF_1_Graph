@@ -82,6 +82,7 @@ body {
 
 /* ------------------------------------------------------------------ title block */
 .rc-head {
+  --title-size: clamp(1.75rem, 2.2vw + 1rem, 2.5rem); /* adjust title size here */
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -90,11 +91,18 @@ body {
 .rc-title {
   margin: 0;
   font-family: var(--font-serif);
-  font-size: clamp(1.75rem, 2.2vw + 1rem, 2.5rem); /* adjust title size here */
+  font-size: var(--title-size);
   font-weight: 400;
   line-height: 1.1;
 }
-.rc-logo { flex: none; width: 40px; height: 40px; } /* adjust logo size here */
+/* the lizard mark: the same rule as the 2026_090 timeline (Monga_2026_090_AA_India_DSF_2_Timeline), so the two
+   graphics show the same size mark in the same article column; 0.8 x that graphic's title size */
+.rc-logo {
+  flex: none;
+  width: clamp(1.2rem, 1.6vw + 0.72rem, 1.8rem);  /* adjust logo size here (keep it matching 2026_090) */
+  height: auto;
+  margin-top: 0.2rem;  /* lines the mark up with the top of the capitals, as in the static graphic */
+}
 
 .rc-intro {
   display: flex;
