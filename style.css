@@ -49,7 +49,6 @@
   --col-name: minmax(9.5rem, 1.1fr);  /* adjust column widths here */
   --col-boats: minmax(0, 1.25fr);
   --col-funds: minmax(0, 2fr);
-  --col-info: 4.5rem;
   --col-gap: 1.25rem;                 /* adjust space between columns here */
 }
 
@@ -168,7 +167,7 @@ body {
 }
 .rc-row {
   display: grid;
-  grid-template-columns: var(--col-name) var(--col-boats) var(--col-funds) var(--col-info);
+  grid-template-columns: var(--col-name) var(--col-boats) var(--col-funds);
   align-items: center;
   column-gap: var(--col-gap);
   min-height: 56px;  /* adjust row height here */
@@ -184,7 +183,6 @@ body {
   font-size: 0.875rem; /* adjust column header size here */
   line-height: 1.3;
 }
-.rc-row--head .rc-info { text-align: center; }
 .rc-row--head .rc-name { font-size: inherit; line-height: inherit; }
 
 .rc-name { font-size: 1.125rem; line-height: 1.25; } /* adjust state name size here */
@@ -193,8 +191,6 @@ body {
   color: var(--ink-muted);
   font-size: 0.75rem;     /* adjust UT tag size here */
   letter-spacing: 0.04em;
-  text-decoration: none;
-  cursor: help;
 }
 .rc-none { color: var(--ink-muted); font-size: 0.9375rem; }
 
@@ -225,25 +221,6 @@ body {
 .rc-trigger { cursor: pointer; border-radius: 3px; outline: none; }
 .rc-trigger:focus-visible { box-shadow: var(--focus-ring); }
 
-/* info button */
-.rc-info { display: flex; justify-content: center; }
-.rc-info-btn {
-  display: grid;
-  place-items: center;
-  width: 28px;   /* adjust info button size here */
-  height: 28px;
-  padding: 0;
-  border: 0;
-  border-radius: 50%;
-  background: none;
-  color: var(--ink);  /* adjust info button colour here */
-  cursor: pointer;
-}
-.rc-info-btn svg { display: block; width: 100%; height: 100%; }
-.rc-info-btn:hover,
-.rc-info-btn[aria-expanded="true"] { color: var(--c-built); } /* adjust info button hover colour here */
-.rc-info-btn:focus-visible { outline: none; box-shadow: var(--focus-ring); }
-
 /* ------------------------------------------------------------------ hover card */
 .rc-tip {
   position: absolute;
@@ -265,7 +242,6 @@ body {
   transition: opacity 0.12s ease, visibility 0.12s;
 }
 .rc-tip.is-on { opacity: 1; visibility: visible; }
-.rc-tip.is-note { max-width: 360px; font-size: 0.9375rem; line-height: 1.45; pointer-events: auto; }
 .rc-tip__title { margin-bottom: 4px; font-weight: 500; }
 .rc-tip__line { color: var(--ink-muted); }
 .rc-tip__grid {
@@ -283,40 +259,25 @@ body {
 .rc-foot { margin-top: 12px; color: var(--ink-muted); font-size: 0.8125rem; line-height: 1.4; } /* adjust footer size here */
 .rc-foot p { margin: 4px 0 0; }
 
-.rc-sr {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
-}
-
 /* ------------------------------------------------------------------ article-column widths: more room for the dots */
 @media (max-width: 900px) {
   :root {
     --col-name: minmax(8rem, 0.9fr);   /* adjust mid-width column widths here */
     --col-boats: minmax(0, 1.45fr);
     --col-funds: minmax(0, 1.6fr);
-    --col-info: 2.75rem;
     --col-gap: 1rem;
   }
   .rc-panel { padding: 4px 16px 12px; }
 }
 
-/* ------------------------------------------------------------------ phones: name and info on one line, dots and bar below */
+/* ------------------------------------------------------------------ phones: name, dots and bar stacked */
 @media (max-width: 640px) {
   .rc-row {
-    grid-template-columns: 1fr auto;
-    grid-template-areas: "name info" "boats boats" "funds funds";
-    row-gap: 8px;
+    grid-template-columns: 1fr;
+    row-gap: 8px; /* adjust space between the name, dots and bar here */
   }
   .rc-row--head { display: none; }
   .rc-row--head + .rc-row { border-top: 0; }
-  .rc-name { grid-area: name; }
-  .rc-boats { grid-area: boats; }
-  .rc-funds { grid-area: funds; }
-  .rc-info { grid-area: info; }
   .rc-funds:empty { display: none; }
   .rc-stat { width: 100%; }
 }

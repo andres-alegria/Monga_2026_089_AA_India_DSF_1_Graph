@@ -14,9 +14,9 @@
     dotR: 3.6,           // adjust dot radius here (px)
     fundsMax: 1400,      // ₹ million at the right edge of the funds column
     ticks: [0, 500, 1000], // adjust the funds scale labels here
-    minSeg: 0.005,       // unexplained remainders smaller than this share of a bar are listed, not drawn
+    minSeg: 0.005,       // a "not available" piece smaller than this share of its bar is not drawn
     cardGap: 10,         // adjust space between a mark and its hover card here (px)
-    hideDelay: 140,      // ms before a card closes, so the pointer can move onto a note
+    hideDelay: 140,      // ms before a card closes once the pointer leaves its mark
   };
 
   var NS = "http://www.w3.org/2000/svg";
@@ -47,15 +47,16 @@
   function isNum(v) { return typeof v === "number"; }
   function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
-  // the bar's pieces in drawing order; a missing share leaves a "not available" piece
+  // the bar's pieces in drawing order. A missing share leaves a "not available" piece; shares that are all known but
+  // don't add up to the total (Andaman and Nicobar Islands) leave none, since a footnote explains the gap
   function fundParts(d) {
     var parts = [], known = 0;
     [["central", d.central], ["state", d.state], ["beneficiary", d.beneficiary]].forEach(function (p) {
       if (isNum(p[1]) && p[1] > 0) { parts.push({ kind: p[0], value: p[1] }); known += p[1]; }
     });
-    var rest = d.total - known;
     var missing = !isNum(d.central) || (d.state !== "ut" && !isNum(d.state)) || !isNum(d.beneficiary);
-    return { parts: parts, rest: rest > 0.05 ? rest : 0, missing: missing };
+    var rest = missing ? d.total - known : 0;
+    return { parts: parts, rest: rest > 0.05 ? rest : 0 };
   }
 
   // ---------------------------------------------------------------- title block, legend, callout, footer
@@ -99,10 +100,6 @@
   // ---------------------------------------------------------------- table
   var table = document.getElementById("rc-table");
 
-  var INFO_ICON =
-    '<svg viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="12" fill="currentColor"/>' +
-    '<circle cx="14" cy="8.6" r="1.7" fill="#ffffff"/><rect x="12.5" y="11.6" width="3" height="9" rx="1.3" fill="#ffffff"/></svg>';
-
   function cell(cls, role) {
     var c = el("div", "rc-cell " + cls);
     c.setAttribute("role", role || "cell");
@@ -111,7 +108,7 @@
 
   var head = el("div", "rc-row rc-row--head");
   head.setAttribute("role", "row");
-  ["name", "boats", "funds", "info"].forEach(function (k) {
+  ["name", "boats", "funds"].forEach(function (k) {
     var h = cell("rc-" + k, "columnheader");
     h.appendChild(el("span", null, C.headers[k]));
     if (k === "funds") {
@@ -128,7 +125,7 @@
   });
   table.appendChild(head);
 
-  C.order.forEach(function (key, i) {
+  C.order.forEach(function (key) {
     var d = byKey[key];
     if (!d) return;
     var row = el("div", "rc-row");
@@ -136,11 +133,7 @@
 
     var nameCell = cell("rc-name", "rowheader");
     nameCell.appendChild(document.createTextNode(name(key)));
-    if (C.ut.indexOf(key) > -1) {
-      var ut = el("abbr", "rc-ut", C.utTag);
-      ut.title = "Union territory";
-      nameCell.appendChild(ut);
-    }
+    if (C.ut.indexOf(key) > -1) nameCell.appendChild(el("span", "rc-ut", C.utTag)); // a plain tag: the footer note explains it
 
     var boats = cell("rc-boats");
     if (d.sanctioned == null) boats.appendChild(el("span", "rc-none", C.unavailable));
@@ -150,13 +143,9 @@
     var funds = cell("rc-funds");
     if (isNum(d.total) && d.total > 0) funds.appendChild(fundsBar(d));
 
-    var info = cell("rc-info");
-    if (C.reasons[key]) info.appendChild(infoButton(d, C.reasons[key], i));
-
     row.appendChild(nameCell);
     row.appendChild(boats);
     row.appendChild(funds);
-    row.appendChild(info);
     table.appendChild(row);
   });
 
@@ -183,7 +172,7 @@
         class: d.built == null ? "d-unknown" : i < d.built ? "d-built" : "d-idle",
       }));
     }
-    bind(svg, function () { return boatsCard(d); }, "data");
+    bind(svg, function () { return boatsCard(d); });
     wrap.appendChild(svg);
     return wrap;
   }
@@ -205,26 +194,8 @@
       na.style.width = (f.rest / d.total) * 100 + "%";
       bar.appendChild(na);
     }
-    bind(bar, function () { return fundsCard(d); }, "data");
+    bind(bar, function () { return fundsCard(d); });
     return bar;
-  }
-
-  function infoButton(d, text, i) {
-    var btn = el("button", "rc-info-btn");
-    btn.type = "button";
-    btn.innerHTML = INFO_ICON;
-    btn.setAttribute("aria-label", "More information: " + name(d.key));
-    btn.setAttribute("aria-expanded", "false");
-    var sr = el("span", "rc-sr", text);
-    sr.id = "rc-note-" + i;
-    btn.setAttribute("aria-describedby", sr.id);
-    bind(btn, function () {
-      return '<div class="rc-tip__title">' + esc(name(d.key)) + "</div><div>" + esc(text) + "</div>";
-    }, "note");
-    var frag = document.createDocumentFragment();
-    frag.appendChild(btn);
-    frag.appendChild(sr);
-    return frag;
   }
 
   // ---------------------------------------------------------------- card and label text
@@ -259,7 +230,7 @@
       }).join("; ") + ".";
   }
   function fundsCard(d) {
-    var t = C.tip, f = fundParts(d);
+    var t = C.tip;
     var h = '<div class="rc-tip__title">' + esc(name(d.key)) + "</div>" +
       '<div class="rc-tip__line">' + esc(money(d.total)) + " " + esc(t.total) + "</div>" +
       '<div class="rc-tip__grid">';
@@ -267,7 +238,6 @@
       var s = shareText(d, k);
       h += keyRow("rc-key-bar rc-seg--" + k, t[k], s.text, s.na);
     });
-    if (f.rest && !f.missing) h += keyRow("rc-key-bar rc-seg--na", t.unaccounted, money(f.rest));
     return h + "</div>";
   }
   function keyRow(swatch, label, value, na) {
@@ -278,18 +248,15 @@
   // ---------------------------------------------------------------- hover cards
   var active = null, pinned = false, hideTimer = null;
 
-  function show(node, html, kind) {
+  function show(node, html) {
     clearTimeout(hideTimer);
-    if (active && active !== node && active.getAttribute("aria-expanded")) active.setAttribute("aria-expanded", "false");
     active = node;
     tip.innerHTML = html;
-    tip.className = "rc-tip is-on" + (kind === "note" ? " is-note" : "");
-    if (node.getAttribute("aria-expanded")) node.setAttribute("aria-expanded", "true");
-    place(node, kind);
+    tip.className = "rc-tip is-on";
+    place(node);
   }
   function hide() {
     clearTimeout(hideTimer);
-    if (active && active.getAttribute("aria-expanded")) active.setAttribute("aria-expanded", "false");
     active = null;
     pinned = false;
     tip.className = "rc-tip";
@@ -299,59 +266,47 @@
     hideTimer = setTimeout(hide, CFG.hideDelay);
   }
 
-  // notes open to the left of their button, so they never cover the other buttons (below it on phones);
-  // data cards sit centred above their mark
-  function place(node, kind) {
+  // a card sits centred above its mark, or below it when there's no room above
+  function place(node) {
     var fr = fig.getBoundingClientRect(), r = node.getBoundingClientRect();
-    var tw = tip.offsetWidth, th = tip.offsetHeight, g = CFG.cardGap, x, y;
-    if (kind === "note") {
-      x = r.left - fr.left - g - tw;
-      y = r.top - fr.top + r.height / 2 - th / 2;
-      if (x < 4) {
-        x = r.right - fr.left - tw;
-        y = r.bottom - fr.top + g;
-      }
-      y = Math.max(4, Math.min(y, fr.height - th - 4));
-    } else {
-      x = r.left - fr.left + r.width / 2 - tw / 2;
-      y = r.top - fr.top - g - th;
-      if (r.top - g - th < 0) y = r.bottom - fr.top + g;
-    }
+    var tw = tip.offsetWidth, th = tip.offsetHeight, g = CFG.cardGap;
+    var x = r.left - fr.left + r.width / 2 - tw / 2;
+    var y = r.top - fr.top - g - th;
+    if (r.top - g - th < 0) y = r.bottom - fr.top + g;
     x = Math.max(4, Math.min(x, fr.width - tw - 4));
     tip.style.transform = "translate(" + Math.round(x) + "px, " + Math.round(y) + "px)";
   }
 
-  function bind(node, html, kind) {
+  function bind(node, html) {
+    function toggle() {
+      if (pinned && active === node) { hide(); return; }
+      show(node, html());
+      pinned = true;
+    }
     node.addEventListener("pointerenter", function (e) {
-      if (e.pointerType === "mouse" && !pinned) show(node, html(), kind);
+      if (e.pointerType === "mouse" && !pinned) show(node, html());
     });
     node.addEventListener("pointerleave", function (e) {
       if (e.pointerType === "mouse" && !pinned) hideSoon();
     });
     node.addEventListener("focus", function () {
-      if (node.matches(":focus-visible")) show(node, html(), kind);
+      if (node.matches(":focus-visible")) show(node, html());
     });
     node.addEventListener("blur", function () {
       if (!pinned) hideSoon();
     });
-    node.addEventListener("click", function () {
-      if (pinned && active === node) { hide(); return; }
-      show(node, html(), kind);
-      pinned = true;
-    });
+    node.addEventListener("click", toggle);
     node.addEventListener("keydown", function (e) {
-      if ((e.key === "Enter" || e.key === " ") && node.tagName !== "BUTTON") {
+      if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
-        node.click();
+        toggle(); // not node.click(): the dots are an <svg>, which has no click() method
       }
     });
   }
 
-  tip.addEventListener("pointerenter", function () { clearTimeout(hideTimer); });
-  tip.addEventListener("pointerleave", function (e) { if (e.pointerType === "mouse" && !pinned) hideSoon(); });
   document.addEventListener("pointerdown", function (e) {
-    if (active && !active.contains(e.target) && !tip.contains(e.target)) hide();
+    if (active && !active.contains(e.target)) hide();
   });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") hide(); });
-  window.addEventListener("resize", function () { if (active) place(active, tip.classList.contains("is-note") ? "note" : "data"); });
+  window.addEventListener("resize", function () { if (active) place(active); });
 })();

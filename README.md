@@ -1,10 +1,9 @@
 # 2026_089 · India deep-sea fishing scheme, interactive report card
 
 A responsive, embeddable version of the static report card. It has one row per coastal state or union territory:
-- **Dots:** one per boat sanctioned in 2020–2025, coloured by whether the boat was built or under construction by
-  September 2026.
-- **Funds bar:** the amount sanctioned, split into central, state and beneficiary shares.
-- **Info button:** the reporter's note.
+- **Dots:** one per boat approved in 2020–2025, coloured by whether it had been ordered (built or under construction)
+  by September 2026.
+- **Funds bar:** the amount approved, split into central, state and beneficiary shares.
 
 Numbers show on hover, keyboard focus or tap.
 
@@ -13,7 +12,7 @@ Numbers show on hover, keyboard focus or tap.
 | File | What it holds |
 |---|---|
 | `index.html` | Page skeleton |
-| `content.js` | All editorial text: title, deck, legend, notes, source, row order, display names, the notes behind the info buttons |
+| `content.js` | All editorial text: title, deck, legend, hover text, notes, source, row order, display names |
 | `data.js` | Figures in ₹ million. **Generated.** Don't edit by hand |
 | `make_data.py` | Rebuilds `data.js` from the reporter's spreadsheet, which stays out of this repo |
 | `style.css` | Mongabay Design System colours, type and layout. Tweak points are commented |
@@ -41,11 +40,12 @@ Numbers show on hover, keyboard focus or tap.
   (`min(780px, 100vw − 2 × clamp(20px, 1px + 5vw, 40px))`, read from news.mongabay.com on 30 Sep 2026).
 - From that width it gives a height at least as tall as the graphic needs (`dev/heights.json`).
 - The `?fill=1` in the URL makes the graphic stretch to fill the frame. The formula's few spare pixels go into the row
-  spacing: 1 to 8 px per row, or about 3 px on desktop. They never show as a gap under the source line.
+  spacing: up to about 6 px per row on phones and tablets, and under 1 px on desktop. They never show as a gap under
+  the source line.
 - The frame has a 40 px margin, the same as Mongabay's own images, so the next paragraph starts about 44 px below the
   source line.
-- Checked for every screen width from 320 to 1,600 px, and in the browser at 320, 375, 412, 430, 600, 768, 820 and
-  1,280 px: no overflow, no gap.
+- Checked for every screen width from 320 to 1,600 px, and in the browser at 320, 375, 412, 600, 768 and 1,280 px:
+  no overflow, no gap (6 Oct 2026).
 
 **When the content changes** (new figures or text change the graphic's height), re-measure and rebuild:
 1. Serve the repo root with `python3 -m http.server`, open `/dev/measure.html`, and save its JSON as
@@ -55,8 +55,12 @@ Numbers show on hover, keyboard focus or tap.
 
 **Limits:**
 - It relies on Mongabay's column rule. If the theme changes it, re-check with `dev/shortcode-test.html`.
-- On Windows browsers with classic scrollbars, windows 860–880 px wide can come up short by a few pixels. The frame then
-  scrolls a little rather than hiding content (`scrolling="auto"`).
+- On Windows browsers with classic scrollbars, `100vw` includes the scrollbar, so the formula sees a column about
+  17 px wider than the real one. Two window-width bands come up short, and the frame then scrolls rather than
+  hiding content (`scrolling="auto"`):
+  - 714–732 px: the formula gives the three-column height, but the graphic has already switched to one column, so
+    the frame scrolls by up to about 600 px.
+  - 808–824 px: about 6 px short.
 
 **If Mongabay's web team can add a script to a post:** `embed-snippet.html` resizes the frame exactly, using
 `embed-height.js`, without fill mode.
@@ -64,16 +68,13 @@ Numbers show on hover, keyboard focus or tap.
 **Also:**
 - Keep the static PNG for newsletters, apps and social posts, where iframes don't run.
 - Public Sans loads from Google Fonts. Rowan is not on Google Fonts: the title uses a locally installed copy, else
-  Georgia, so a hosted version needs a licensed Rowan webfont.
+  the webfont Mongabay's own theme serves (news.mongabay.com, CORS-open), so every reader gets the same title
+  height.
 
 ## Open questions for the reporter
 
 - **Andaman and Nicobar Islands:** the centre and beneficiary shares (₹33.6 million each) are ₹4.8 million short of
   the ₹72 million total. The update flags this as a possible error in the source Lok Sabha document. The graphic
-  footnotes it and shows the gap as "Not broken down".
+  footnotes it, and its bar shows the two shares only.
 - **Puducherry:** the boats ordered and the beneficiary share are not available.
 - **Odisha and Daman and Diu:** no figures at all ("Data not available").
-- **Notes behind the info buttons:** the update has no notes column. They are still edited from the original sheet's
-  column K. The Goa and Tamil Nadu notes were written when those states had no boats approved, so check they still
-  hold with 20 and 50 approved and none ordered. Puducherry's note came from the old "awaiting response" cell and was
-  removed.
