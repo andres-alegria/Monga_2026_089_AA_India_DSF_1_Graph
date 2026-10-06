@@ -109,11 +109,13 @@ body {
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 16px 40px;   /* adjust space between the deck and the callout here */
+  gap: 16px 32px;   /* adjust space between the deck and the callout here */
   margin-top: 0.6rem;
 }
+/* the callout sits to the right of the deck while the deck keeps its flex-basis width: 25.5rem keeps the deck to four
+   lines beside the callout in Mongabay's 780 px column; narrower, the callout drops below the deck */
 .rc-deck {
-  flex: 1 1 30rem;
+  flex: 1 1 25.5rem;
   max-width: 50rem;  /* adjust deck line length here */
   margin: 0;
   color: var(--ink-muted);
@@ -144,8 +146,8 @@ body {
 .rc-stat {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 18px;
+  gap: 10px;
+  padding: 10px 14px; /* adjust callout padding here */
   border-radius: var(--radius-card);
   background: var(--card);
   flex: none;
@@ -153,11 +155,11 @@ body {
 .rc-stat__value {
   color: var(--stat-ink);
   font-family: var(--font-serif);
-  font-size: 1.875rem; /* adjust callout number size here */
+  font-size: 1.625rem; /* adjust callout number size here (keep it under the title's size) */
   line-height: 1;
   white-space: nowrap;
 }
-.rc-stat__label { max-width: 9.5rem; font-size: 0.9375rem; line-height: 1.25; } /* adjust callout label size here */
+.rc-stat__label { max-width: 8.5rem; font-size: 0.875rem; line-height: 1.25; } /* adjust callout label size here */
 
 /* ------------------------------------------------------------------ table */
 .rc-panel {

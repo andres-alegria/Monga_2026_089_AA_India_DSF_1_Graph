@@ -35,14 +35,14 @@ def col(vw):
 
 
 # The height formula, in px (see css_height below), fitted to dev/heights.json with a margin of at least 6 px
-# (refitted 6 Oct 2026 after the "More info" column was removed):
-#   - three-column layout (column over 640 px): 1,257 px, plus 29 below a 728 px column (a measured width, so a
-#     fractional column just under it still gets the taller height);
+# (refitted 6 Oct 2026 after the "More info" column was removed and the callout moved back beside the deck):
+#   - three-column layout (column over 640 px): 1,204 px, plus 76 below a 744 px column, where the callout drops
+#     below the deck (744 is a measured width, so a fractional column just under it still gets the taller height);
 #   - one-column phone layout (up to 640 px): the higher of two falling lines, a steep one for small phones and a
 #     gentle one for larger screens.
 FORMULA = {
-    "desk_base": 1257, "desk_step_below": 728, "desk_step": 29,
-    "steep": (3222.7, 3.26), "gentle": (2408.2, 0.81),
+    "desk_base": 1204, "desk_step_below": 744, "desk_step": 76,
+    "steep": (2890.9, 2.22), "gentle": (2382.0, 0.78),
     "switch_at": 640.5,   # the graphic's own layout switch is at 640 px
 }
 

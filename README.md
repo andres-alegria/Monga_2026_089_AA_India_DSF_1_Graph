@@ -56,11 +56,13 @@ Numbers show on hover, keyboard focus or tap.
 **Limits:**
 - It relies on Mongabay's column rule. If the theme changes it, re-check with `dev/shortcode-test.html`.
 - On Windows browsers with classic scrollbars, `100vw` includes the scrollbar, so the formula sees a column about
-  17 px wider than the real one. Two window-width bands come up short, and the frame then scrolls rather than
+  17 px wider than the real one. A few window-width bands come up short, and the frame then scrolls rather than
   hiding content (`scrolling="auto"`):
   - 714–732 px: the formula gives the three-column height, but the graphic has already switched to one column, so
     the frame scrolls by up to about 600 px.
-  - 808–824 px: about 6 px short.
+  - 824–840 px: the formula expects the callout beside the deck, but it has already dropped below it, so the frame
+    is up to about 50 px short.
+  - 558–565 px: up to 5 px short.
 
 **If Mongabay's web team can add a script to a post:** `embed-snippet.html` resizes the frame exactly, using
 `embed-height.js`, without fill mode.
